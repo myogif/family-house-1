@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import api, { apiError } from "@/lib/api";
+import { acceptInvitation, requestFamilyJoin } from "@/lib/data/workflows";
+import { errorMessage } from "@/lib/errors";
 import { useFamily } from "@/context/FamilyContext";
 
 export function JoinFamilyDialog({ open, onOpenChange }) {
@@ -18,14 +19,14 @@ export function JoinFamilyDialog({ open, onOpenChange }) {
     if (!inviteCode.trim()) return toast.error("Masukkan kode undangan");
     setBusy(true);
     try {
-      const { data } = await api.post("/invitations/accept", { code: inviteCode.trim().toUpperCase() });
+      const data = await acceptInvitation(inviteCode);
       await refresh();
       switchFamily(data.id);
       toast.success(`Bergabung ke ${data.name}`);
       setInviteCode("");
       onOpenChange?.(false);
     } catch (e) {
-      toast.error(apiError(e));
+      toast.error(errorMessage(e));
     } finally {
       setBusy(false);
     }
@@ -35,12 +36,12 @@ export function JoinFamilyDialog({ open, onOpenChange }) {
     if (!famCode.trim()) return toast.error("Masukkan kode keluarga");
     setBusy(true);
     try {
-      const { data } = await api.post("/join-requests", { code: famCode.trim().toUpperCase() });
-      toast.success(`Permintaan bergabung ke ${data.family_name} terkirim`);
+      await requestFamilyJoin(famCode);
+      toast.success("Permintaan bergabung terkirim");
       setFamCode("");
       onOpenChange?.(false);
     } catch (e) {
-      toast.error(apiError(e));
+      toast.error(errorMessage(e));
     } finally {
       setBusy(false);
     }

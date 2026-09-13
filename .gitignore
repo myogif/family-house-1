@@ -78,6 +78,14 @@ agenthub/agents/youtube/db
 
 memory/test_credentials.md
 
+# Removed legacy infrastructure (kept in git history if needed)
+backend/
+.emergent/
+.gitconfig
+
+# Build artifacts
+frontend/.next/
+
 # Mobile development
 android-sdk/frontend/node_modules/.cache/default-development/8.pack
 frontend/node_modules/.cache/default-development/1.pack

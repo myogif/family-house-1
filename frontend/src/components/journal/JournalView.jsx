@@ -14,7 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { MOODS, formatDate } from "@/lib/format";
 import { useAuth } from "@/context/AuthContext";
-import api, { apiError } from "@/lib/api";
+import { createJournalEntry, deleteResource } from "@/lib/data/resources";
+import { errorMessage } from "@/lib/errors";
 import { toast } from "sonner";
 import { Plus, BookOpen, Lock, Users, Trash2 } from "lucide-react";
 
@@ -28,17 +29,17 @@ export function JournalView({ scope, title, description, defaultVisibility = "pr
   const submit = async () => {
     if (!form.title || !form.content) return toast.error("Lengkapi jurnal Anda");
     try {
-      await api.post(`/families/${activeId}/journal`, { ...form, date: form.date ? new Date(form.date).toISOString() : null });
+      await createJournalEntry(activeId, { ...form, date: form.date || null });
       toast.success("Jurnal disimpan");
       setOpen(false);
       setForm({ title: "", content: "", mood: "senang", visibility: defaultVisibility, date: "" });
       reload();
-    } catch (e) { toast.error(apiError(e)); }
+    } catch (e) { toast.error(errorMessage(e)); }
   };
 
   const remove = async (id) => {
-    try { await api.delete(`/families/${activeId}/journal/${id}`); reload(); toast.success("Jurnal dihapus"); }
-    catch (e) { toast.error(apiError(e)); }
+    try { await deleteResource(activeId, "journal", id); reload(); toast.success("Jurnal dihapus"); }
+    catch (e) { toast.error(errorMessage(e)); }
   };
 
   return (

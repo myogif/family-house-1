@@ -1,0 +1,3 @@
+-- Local development seed intentionally contains no credentials.
+-- Create test users through Supabase Auth fixtures, then insert related
+-- profiles/families with the service role only in an isolated test environment.

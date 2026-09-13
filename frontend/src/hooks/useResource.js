@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import api from "@/lib/api";
+import { fetchResource } from "@/lib/data/resources";
+import { fetchDashboard } from "@/lib/data/dashboard";
 
 // Fetches a family-scoped (or any) resource. Re-fetches when path changes.
 export function useResource(path, deps = []) {
@@ -10,8 +11,10 @@ export function useResource(path, deps = []) {
     if (!path) return;
     setLoading(true);
     try {
-      const r = await api.get(path);
-      setData(r.data);
+      const result = path.match(/^\/families\/[^/]+\/dashboard$/)
+        ? await fetchDashboard(path.split("/")[2])
+        : await fetchResource(path);
+      setData(result);
     } finally {
       setLoading(false);
     }

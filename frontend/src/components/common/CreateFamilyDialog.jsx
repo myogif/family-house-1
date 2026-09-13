@@ -5,7 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import api, { apiError } from "@/lib/api";
+import { createFamily } from "@/lib/data/families";
+import { errorMessage } from "@/lib/errors";
 import { useFamily } from "@/context/FamilyContext";
 
 export function CreateFamilyDialog({ trigger, open, onOpenChange }) {
@@ -18,7 +19,7 @@ export function CreateFamilyDialog({ trigger, open, onOpenChange }) {
     if (!name.trim()) return toast.error("Nama keluarga wajib diisi");
     setBusy(true);
     try {
-      const { data } = await api.post("/families", { name, description });
+      const data = await createFamily({ name, description });
       await refresh();
       switchFamily(data.id);
       toast.success("Keluarga baru dibuat");
@@ -26,7 +27,7 @@ export function CreateFamilyDialog({ trigger, open, onOpenChange }) {
       setDescription("");
       onOpenChange?.(false);
     } catch (e) {
-      toast.error(apiError(e));
+      toast.error(errorMessage(e));
     } finally {
       setBusy(false);
     }

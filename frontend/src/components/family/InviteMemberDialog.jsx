@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useFamily } from "@/context/FamilyContext";
-import api, { apiError } from "@/lib/api";
+import { createInvitation } from "@/lib/data/workflows";
+import { errorMessage } from "@/lib/errors";
 import { toast } from "sonner";
 import { Copy, MessageCircle, Check } from "lucide-react";
 
@@ -19,17 +20,19 @@ export function InviteMemberDialog({ trigger, onCreated }) {
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const link = result ? `${window.location.origin}/join-family/${result.code}` : "";
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const link = result ? `${origin}/join-family/${result.code}` : "";
 
   const create = async () => {
     setBusy(true);
     try {
-      const { data } = await api.post(`/families/${activeId}/invitations`, {
-        role, expires_days: Number(expires),
+      const data = await createInvitation(activeId, {
+        role,
+        expiresDays: Number(expires),
       });
       setResult(data);
       onCreated?.();
-    } catch (e) { toast.error(apiError(e)); }
+    } catch (e) { toast.error(errorMessage(e)); }
     finally { setBusy(false); }
   };
 

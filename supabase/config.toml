@@ -1,0 +1,15 @@
+project_id = "family-house-local"
+
+[api]
+enabled = true
+
+[db]
+port = 54322
+
+[studio]
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/**"]

@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "supabase:lint": "supabase db lint",
+    "supabase:test:local": "bash scripts/run-local-supabase-tests.sh"
+  },
+  "devDependencies": {
+    "supabase": "^2.117.0"
+  }
+}
