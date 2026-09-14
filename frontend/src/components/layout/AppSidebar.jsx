@@ -9,15 +9,21 @@ import {
   LayoutDashboard, PieChart, ArrowLeftRight, Wallet, Target,
   BookOpen, Users, Calendar, UserCheck, MailPlus, UserPlus, History,
   CheckSquare, CalendarDays, ShoppingCart, Settings, HeartHandshake, ChefHat,
+  HandCoins, Repeat, Building,
 } from "lucide-react";
 
 const GROUPS = [
   { title: "Utama", items: [{ label: "Dasbor", icon: LayoutDashboard, path: "/dashboard" }] },
   { title: "Keuangan", items: [
-    { label: "Ikhtisar", icon: PieChart, path: "/finance/overview" },
-    { label: "Transaksi", icon: ArrowLeftRight, path: "/finance/transactions" },
-    { label: "Anggaran", icon: Wallet, path: "/finance/budget" },
+    { label: "Ikhtisar & Statistik", icon: PieChart, path: "/finance/overview" },
+    { label: "Dompet & Rekening", icon: Wallet, path: "/finance/accounts" },
+    { label: "Transaksi Harian", icon: ArrowLeftRight, path: "/finance/transactions" },
+    { label: "Kalender Keuangan", icon: Calendar, path: "/finance/calendar" },
+    { label: "Anggaran", icon: Target, path: "/finance/budget" },
     { label: "Target Tabungan", icon: Target, path: "/finance/goals" },
+    { label: "Hutang & Piutang", icon: HandCoins, path: "/finance/debts" },
+    { label: "Langganan Rutin", icon: Repeat, path: "/finance/subscriptions" },
+    { label: "Aset & Kekayaan", icon: Building, path: "/finance/assets" },
   ] },
   { title: "Jurnal & Catatan", items: [
     { label: "Jurnal Saya", icon: BookOpen, path: "/journal/my" },
@@ -31,10 +37,11 @@ const GROUPS = [
     { label: "Log Aktivitas", icon: History, path: "/family/audit" },
   ] },
   { title: "Perencanaan", items: [
+    { label: "Perencanaan Menu", icon: ChefHat, path: "/planning/meals" },
+    { label: "Buku Resep", icon: BookOpen, path: "/planning/recipes" },
+    { label: "Daftar Belanja", icon: ShoppingCart, path: "/planning/shopping" },
     { label: "Tugas & Jadwal", icon: CheckSquare, path: "/planning/tasks" },
     { label: "Kalender Acara", icon: CalendarDays, path: "/planning/calendar" },
-    { label: "Meal Prep", icon: ChefHat, path: "/planning/meals" },
-    { label: "Daftar Belanja", icon: ShoppingCart, path: "/planning/shopping" },
   ] },
   { title: "Pengaturan", items: [{ label: "Pengaturan Keluarga", icon: Settings, path: "/settings" }] },
 ];

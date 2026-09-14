@@ -18,7 +18,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Check, X, Copy, ShieldAlert } from "lucide-react";
 import api, { apiError } from "@/lib/api";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const MATRIX = [
   { label: "Lihat data keluarga", roles: { husband: true, wife: true, child: true } },
@@ -40,7 +40,7 @@ const ROLE_HEAD = { husband: "Kepala Keluarga", wife: "Istri", child: "Anak" };
 export default function Settings() {
   const { activeId, activeFamily, refresh } = useFamily();
   const { user } = useAuth();
-  const nav = useNavigate();
+  const router = useRouter();
   const { data: members, reload: reloadMembers } = useResource(activeId ? `/families/${activeId}/members` : null, [activeId]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -80,7 +80,7 @@ export default function Settings() {
       await api.delete(`/families/${activeId}`);
       await refresh();
       toast.success("Keluarga dihapus");
-      nav("/dashboard");
+      router.push("/dashboard");
     } catch (e) { toast.error(apiError(e)); }
   };
 

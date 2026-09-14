@@ -1,17 +1,20 @@
+"use client";
+
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
-import { apiError } from "@/lib/api";
+import { errorMessage } from "@/lib/errors";
 import { HeartHandshake } from "lucide-react";
 
 export default function Login() {
   const { login } = useAuth();
-  const nav = useNavigate();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -22,9 +25,9 @@ export default function Login() {
     try {
       await login(email, password);
       toast.success("Selamat datang kembali!");
-      nav("/dashboard");
+      router.push("/dashboard");
     } catch (err) {
-      toast.error(apiError(err));
+      toast.error(errorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -62,7 +65,7 @@ export default function Login() {
             </form>
             <p className="mt-4 text-center text-sm text-muted-foreground">
               Belum punya akun?{" "}
-              <Link to="/register" className="font-medium text-primary hover:underline" data-testid="go-register-link">
+              <Link href="/register" className="font-medium text-primary hover:underline" data-testid="go-register-link">
                 Daftar
               </Link>
             </p>

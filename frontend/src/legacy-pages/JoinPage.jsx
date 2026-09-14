@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useRouter } from "next/navigation";
 import api, { apiError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { HeartHandshake, Loader2 } from "lucide-react";
 
 export default function JoinPage() {
   const { code } = useParams();
-  const nav = useNavigate();
+  const router = useRouter();
   const [state, setState] = useState("loading"); // loading | ok | error | auth
   const [info, setInfo] = useState(null);
   const [error, setError] = useState("");
@@ -35,7 +35,7 @@ export default function JoinPage() {
       const { data } = await api.post("/invitations/accept", { code });
       localStorage.setItem("kk_active_family", data.id);
       toast.success(`Bergabung ke ${data.name}`);
-      nav("/dashboard");
+      router.push("/dashboard");
     } catch (e) {
       toast.error(apiError(e));
     } finally {
