@@ -1,6 +1,7 @@
 {
-  "buildCommand": "yarn build",
-  "installCommand": "yarn install",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
   "outputDirectory": ".next",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "rootDirectory": "frontend"
 }
