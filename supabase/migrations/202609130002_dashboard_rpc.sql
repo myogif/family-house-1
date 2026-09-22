@@ -17,7 +17,10 @@ begin
   end if;
 
   select jsonb_build_object(
-    'balance', coalesce((select sum(case when type = 'income' then amount else -amount end) from public.transactions where family_id = target_family_id), 0),
+    'balance', (
+      coalesce((select sum(initial_balance) from public.wallets where family_id = target_family_id and is_active = true), 0) +
+      coalesce((select sum(case when type = 'income' then amount when type = 'expense' then -amount when type = 'transfer' then -transfer_fee else 0 end) from public.transactions where family_id = target_family_id), 0)
+    ),
     'month_income', coalesce((select sum(amount) from public.transactions where family_id = target_family_id and type = 'income' and date >= month_start), 0),
     'month_expense', coalesce((select sum(amount) from public.transactions where family_id = target_family_id and type = 'expense' and date >= month_start), 0),
     'member_count', (select count(*) from public.family_members where family_id = target_family_id and status = 'active'),

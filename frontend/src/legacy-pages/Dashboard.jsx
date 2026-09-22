@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useFamily } from "@/context/FamilyContext";
 import { useAuth } from "@/context/AuthContext";
 import { useResource } from "@/hooks/useResource";
@@ -33,11 +34,33 @@ export default function Dashboard() {
   const { activeFamily, activeId } = useFamily();
   const { user } = useAuth();
   const { data, loading } = useResource(activeId ? `/families/${activeId}/dashboard` : null, [activeId]);
+  const { data: wallets } = useResource(activeId ? `/families/${activeId}/wallets` : null, [activeId]);
+  const { data: txs } = useResource(activeId ? `/families/${activeId}/transactions` : null, [activeId]);
   const { data: budgets } = useResource(activeId ? `/families/${activeId}/budgets` : null, [activeId]);
   const { data: activity } = useResource(activeId ? `/families/${activeId}/activity` : null, [activeId]);
 
   const hour = new Date().getHours();
   const greet = hour < 11 ? "Selamat pagi" : hour < 15 ? "Selamat siang" : hour < 19 ? "Selamat sore" : "Selamat malam";
+
+  const calculatedBalance = useMemo(() => {
+    if (!wallets || wallets.length === 0) return data?.balance || 0;
+    const walletList = wallets || [];
+    const transactionList = txs || [];
+    return walletList.reduce((sum, w) => {
+      let b = Number(w.initial_balance || 0);
+      transactionList.forEach((t) => {
+        const amt = Number(t.amount || 0);
+        const fee = Number(t.transfer_fee || 0);
+        if (t.wallet_id === w.id) {
+          if (t.type === "income") b += amt;
+          else if (t.type === "expense") b -= amt;
+          else if (t.type === "transfer") b -= amt + fee;
+        }
+        if (t.destination_wallet_id === w.id && t.type === "transfer") b += amt;
+      });
+      return sum + b;
+    }, 0);
+  }, [wallets, txs, data?.balance]);
 
   return (
     <div className="space-y-6" data-testid="dashboard-page">
@@ -59,7 +82,7 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard testid="stat-balance" icon={Wallet} label="Saldo" value={formatIDR(data.balance)} />
+          <StatCard testid="stat-balance" icon={Wallet} label="Saldo" value={formatIDR(calculatedBalance)} />
           <StatCard testid="stat-income" icon={TrendingUp} label="Pemasukan (bln ini)" value={formatIDR(data.month_income)} tone="income" />
           <StatCard testid="stat-expense" icon={TrendingDown} label="Pengeluaran (bln ini)" value={formatIDR(data.month_expense)} tone="expense" />
           <StatCard testid="stat-members" icon={Users} label="Anggota" value={data.member_count} />
